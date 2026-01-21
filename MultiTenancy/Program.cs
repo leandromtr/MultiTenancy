@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MultiTenancy.Middleware;
 using MultiTenancy.Models;
 using MultiTenancy.Services;
 
@@ -8,6 +9,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddScoped<ICurrentTenantService, CurrentTenantService>();
 
 
 builder.Services.AddControllers();
@@ -24,6 +26,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseMiddleware<TenantResolver>();
 
 app.MapControllers();
 

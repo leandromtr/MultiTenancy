@@ -1,14 +1,42 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MultiTenancy.Services;
 
 namespace MultiTenancy.Models
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        private readonly ICurrentTenantService _currentTenantService;
+        public string CurrentTenantId { get; set; }
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentTenantService currentTenantService)
             : base(options)
         {
+            _currentTenantService = currentTenantService;
+            CurrentTenantId = _currentTenantService.TenantId ?? string.Empty;
         }
 
-         public DbSet<Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>().HasQueryFilter(x => x.TenantId == _currentTenantService.TenantId);
+        }
+
+        public override int SaveChanges()
+        {
+            foreach (var entry in ChangeTracker.Entries<IMustHaveTenant>().ToList())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                    case EntityState.Modified:
+                        entry.Entity.TenantId = CurrentTenantId;
+                        break;
+                }
+            }
+            var result = base.SaveChanges();
+            return base.SaveChanges();
+        }
     }
 }
