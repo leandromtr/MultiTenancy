@@ -12,7 +12,7 @@ namespace MultiTenancy.Models
             : base(options)
         {
             _currentTenantService = currentTenantService;
-            CurrentTenantId = _currentTenantService.TenantId ?? string.Empty;
+            CurrentTenantId = _currentTenantService.TenantId;
         }
 
         public DbSet<Product> Products { get; set; }
@@ -20,7 +20,7 @@ namespace MultiTenancy.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Product>().HasQueryFilter(x => x.TenantId == _currentTenantService.TenantId);
+            modelBuilder.Entity<Product>().HasQueryFilter(x => x.TenantId == CurrentTenantId);
         }
 
         public override int SaveChanges()
@@ -36,7 +36,7 @@ namespace MultiTenancy.Models
                 }
             }
             var result = base.SaveChanges();
-            return base.SaveChanges();
+            return result;
         }
     }
 }

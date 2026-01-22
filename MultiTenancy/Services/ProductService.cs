@@ -7,12 +7,22 @@ namespace MultiTenancy.Services
     {
         private readonly ApplicationDbContext _context;
 
+        public ProductService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public IEnumerable<Product> GetAllProducts()
         {
             var products = _context.Products.ToList();
             return products;
         }
 
+        public Product GetProductsById(int id)
+        {
+            var product = _context.Products.Where(p => p.Id == id).FirstOrDefault();
+            return product;
+        }
 
         public Product CreateProduct(CreateProductRequest request)
         {
@@ -32,7 +42,7 @@ namespace MultiTenancy.Services
             {
                 return false;
             }
-            _context.Products.Remove(product);
+            _context.Remove(product);
             _context.SaveChanges();
             return true;
         }

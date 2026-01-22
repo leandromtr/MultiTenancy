@@ -5,21 +5,20 @@ namespace MultiTenancy.Services
 {
     public class CurrentTenantService: ICurrentTenantService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly TenantDbContext _context;
+        public string? TenantId { get; set; }
 
-        public CurrentTenantService(ApplicationDbContext context)
+        public CurrentTenantService(TenantDbContext context)
         {
             _context = context;
         }
 
-        public string? TenantId { get; set; }
-
-        public async Task<bool> SetTenant(string tenantId)
+        public async Task<bool> SetTenant(string tenant)
         {
-            var tenantInfo = await _context.Tenants.Where(x => x.Id == tenantId).FirstOrDefaultAsync();
+            var tenantInfo = await _context.Tenants.Where(x => x.Id == tenant).FirstOrDefaultAsync();
             if (tenantInfo != null)
             {
-                TenantId = tenantId;
+                TenantId = tenantInfo.Id;
                 return true;
             }
             else
