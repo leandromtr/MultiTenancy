@@ -23,7 +23,8 @@ namespace MultiTenancy.Services
             }
             else
             {
-                throw new Exception("Tenant invalid");
+                return false;
+                //throw new Exception("Tenant invalid");
             }
         }
     }
