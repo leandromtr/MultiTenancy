@@ -1,7 +1,7 @@
 ﻿using MultiTenancy.Models;
 using MultiTenancy.Services.DTOs;
 
-namespace MultiTenancy.Services
+namespace MultiTenancy.Services.ProductService
 {
     public class ProductService : IProductService
     {

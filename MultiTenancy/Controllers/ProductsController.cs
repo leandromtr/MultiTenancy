@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MultiTenancy.Services;
 using MultiTenancy.Services.DTOs;
+using MultiTenancy.Services.ProductService;
 
 namespace MultiTenancy.Controllers
 {

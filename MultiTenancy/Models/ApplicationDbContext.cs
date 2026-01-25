@@ -7,20 +7,30 @@ namespace MultiTenancy.Models
     {
         private readonly ICurrentTenantService _currentTenantService;
         public string CurrentTenantId { get; set; }
+        public string CurrentTenantConnectionString{ get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentTenantService currentTenantService)
             : base(options)
         {
             _currentTenantService = currentTenantService;
             CurrentTenantId = _currentTenantService.TenantId;
+            CurrentTenantConnectionString = _currentTenantService.ConnectionString;
         }
 
         public DbSet<Product> Products { get; set; }
-        public DbSet<Tenant> Tenants { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>().HasQueryFilter(x => x.TenantId == CurrentTenantId);
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            string tenantConnectionString = CurrentTenantConnectionString;
+            if (!string.IsNullOrEmpty(tenantConnectionString))
+            {
+                _ = optionsBuilder.UseSqlServer(CurrentTenantConnectionString);
+            }
         }
 
         public override int SaveChanges()

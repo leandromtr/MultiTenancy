@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace MultiTenancy.Migrations
+namespace MultiTenancy.Migrations.ApplicationDb
 {
     /// <inheritdoc />
-    public partial class InitialMiration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,18 +24,6 @@ namespace MultiTenancy.Migrations
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "Tenants",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tenants", x => x.Id);
-                });
         }
 
         /// <inheritdoc />
@@ -43,9 +31,6 @@ namespace MultiTenancy.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "Tenants");
         }
     }
 }

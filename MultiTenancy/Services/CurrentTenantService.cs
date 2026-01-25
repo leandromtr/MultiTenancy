@@ -7,6 +7,7 @@ namespace MultiTenancy.Services
     {
         private readonly TenantDbContext _context;
         public string? TenantId { get; set; }
+        public string? ConnectionString { get; set; } = null;
 
         public CurrentTenantService(TenantDbContext context)
         {
@@ -19,6 +20,7 @@ namespace MultiTenancy.Services
             if (tenantInfo != null)
             {
                 TenantId = tenantInfo.Id;
+                ConnectionString = tenantInfo.ConnectionString;
                 return true;
             }
             else
